@@ -1,3 +1,3 @@
-module Pio
+module Collie
   VERSION = "0.0.1"
 end
