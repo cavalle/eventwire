@@ -16,10 +16,10 @@ For example, a Project Management System might publish events when tasks are mar
 
     class Task
       include Eventwire::Publisher
-    
-      def mark_as_completed!(user)
-        self.completed = true
-        publish_event :task_completed, :task_name => name, :by => user.name
+
+      def mark_as_complete!(user)
+        @completed = true
+        publish_event :task_completed, :task_name => @name, :by => user.name
       end
       
       # ...
@@ -52,7 +52,7 @@ Finally, the Notifier is also interested in the same event:
       include Eventwire::Subscriber
       
       on :task_completed do |event|
-        Notifier.new(:email   => boss_email(event.by), 
+        Notifier.new(:email   => find_boss_email(event.by), 
                      :subject => "Task #{event.task_name} completed").send!
       end
       
