@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe 'Project Management System' do
   
-  require 'acceptance/project_management/user'
-  require 'acceptance/project_management/task'
-  require 'acceptance/project_management/tasks_stats'
-  require 'acceptance/project_management/notifier'  
+  require 'examples/project_management/user'
+  require 'examples/project_management/task'
+  require 'examples/project_management/tasks_stats'
+  require 'examples/project_management/notifier'  
 
   before do
     @jdoe = User.new('jdoe')

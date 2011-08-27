@@ -14,3 +14,4 @@ RSpec.configure do |config|
   config.include Helpers
 end
 
+$:.unshift File.dirname(__FILE__) + '/..'
