@@ -11,7 +11,7 @@ module Eventwire
       
       def publish(event_name, event_data = nil)
         handlers(event_name).each do |handler|
-          handler.call event_data && Struct.new(*event_data.keys).new(*event_data.values)
+          handler.call event_data
         end
       end
       
