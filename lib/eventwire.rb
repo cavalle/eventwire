@@ -1,4 +1,4 @@
-require "eventwire/version"
+require 'eventwire/version'
 
 module Eventwire
   # Your code goes here...
