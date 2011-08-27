@@ -39,7 +39,7 @@ Meanwhile, on the other side of the universe, an Analytics Application is suppos
         @completion_time_count += 1
       end
     
-      def average_completion_time
+      def self.average_completion_time
         @completion_time_sum / @completion_time_count
       end
       
@@ -73,8 +73,8 @@ Eventwire is a Ruby library that abstracts developers from the low-level details
 
 It provides two modules, `Eventwire::Publisher` and `Eventwire::Subscriber`, which are all developers need to care about:
 
-- Notifying changes with `Eventwire::Publisher#publish_event`
-- Reacting to changes with `Eventwire::Subscriber#on` 
+- Notify changes with `Eventwire::Publisher#publish_event`
+- React to changes with `Eventwire::Subscriber#on` 
 
 See the code examples above.
 
