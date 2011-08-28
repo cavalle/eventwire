@@ -1,7 +1,7 @@
 require 'eventwire/version'
 require 'eventwire/publisher'
 require 'eventwire/subscriber'
-require 'eventwire/drivers/in_process'
+require 'eventwire/drivers'
 
 module Eventwire
   
