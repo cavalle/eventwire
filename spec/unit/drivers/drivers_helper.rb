@@ -2,6 +2,12 @@ require 'spec_helper'
 require 'timeout'
 
 shared_examples_for 'a driver' do
+  
+  def start_worker
+    @t = Thread.new { subject.start }
+    @t.abort_on_exception = true
+    sleep 0.1
+  end
 
   after do
     subject.stop
@@ -59,12 +65,6 @@ shared_examples_for 'a driver' do
     eventually {
       event_data.should == { 'key1' => 'value1', 'key2' => 2 }
     }
-  end
-  
-  def start_worker
-    @t = Thread.new { subject.start }
-    @t.abort_on_exception = true
-    sleep 0.1
   end
   
 end

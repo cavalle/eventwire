@@ -41,11 +41,12 @@ class Eventwire::Drivers::AMQP
     @subscriptions ||= []
   end
   
-  def bind_subscription(event_name, handler_id, handler)    
-    fanout = MQ.fanout(event_name)
-    queue  = MQ.queue(handler_id)
-    
-    queue.bind(fanout).subscribe do |json_data|
+  def bind_subscription(event_name, handler_id, handler)   
+    mq = MQ.new 
+    fanout = mq.fanout(event_name)
+    queue  = mq.queue(handler_id)
+
+    queue.bind(fanout).subscribe do |json_data|      
       handler.call parse_json(json_data) 
     end
   end
