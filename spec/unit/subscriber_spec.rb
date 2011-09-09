@@ -15,6 +15,7 @@ describe Eventwire::Subscriber do
     it 'should subscribe with a handler that builds an event object' do
       Eventwire.driver.should_receive(:subscribe) do |event_name, _, &handler|
         handler.call(:task_name => 'Cleaning').should == 'Cleaning'
+        handler.call('task_name' => 'Cleaning').should == 'Cleaning'
       end
       
       subject.on(:task_completed) { |data| data.task_name }

@@ -8,16 +8,17 @@ module TasksStats
   @start_times = {}
 
   on :task_created do |event|
-    @start_times[event.task_name] = Time.now
+    @start_times[event.task_name] = Time.parse(event.timestamp.to_s)
   end
 
   on :task_completed do |event|
-    @completion_time_sum   += Time.now - @start_times.delete(event.task_name)
+    @completion_time_sum   += Time.parse(event.timestamp.to_s) - @start_times.delete(event.task_name)
     @completion_time_count += 1
   end
 
   def self.average_completion_time
-    @completion_time_sum.to_i / @completion_time_count
+    return -1 if @completion_time_sum == 0
+    @completion_time_sum / @completion_time_count
   end
   
 end

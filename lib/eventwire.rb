@@ -16,7 +16,7 @@ module Eventwire
   end
   
   def self.build_event(data)
-    data && Struct.new(*data.keys).new(*data.values)
+    data && Struct.new(*data.keys.map(&:to_sym)).new(*data.values)
   end
   
   def self.driver
