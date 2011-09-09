@@ -1,3 +1,5 @@
+self.class.send :remove_const, :TasksStats if defined?(TasksStats)
+
 module TasksStats
   include Eventwire::Subscriber
   

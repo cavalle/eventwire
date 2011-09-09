@@ -1,13 +1,15 @@
 require 'spec_helper'
 
-describe 'Project Management System' do
-  
-  require 'examples/project_management/user'
-  require 'examples/project_management/task'
-  require 'examples/project_management/tasks_stats'
-  require 'examples/project_management/notifier'  
+describe 'Project Management System' do  
 
   before do
+    Eventwire.driver = :InProcess
+    
+    load 'examples/project_management/user.rb'
+    load 'examples/project_management/task.rb'
+    load 'examples/project_management/tasks_stats.rb'
+    load 'examples/project_management/notifier.rb'
+    
     @jdoe = User.new('jdoe')
     @rroe = User.new('rroe')
     

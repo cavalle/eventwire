@@ -23,4 +23,9 @@ module Eventwire
     @driver ||= Drivers::InProcess.new
   end
   
+  def self.driver=(driver)
+    klass = Drivers.const_get(driver.to_sym) if driver.respond_to?(:to_sym)
+    @driver = klass ? klass.new : driver
+  end
+  
 end

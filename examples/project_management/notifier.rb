@@ -1,3 +1,5 @@
+self.class.send :remove_const, :Notifier if defined?(Notifier)
+
 class Notifier
   include Eventwire::Subscriber
 

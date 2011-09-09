@@ -1,3 +1,5 @@
+self.class.send :remove_const, :Task if defined?(Task)
+
 class Task
   include Eventwire::Publisher
   
