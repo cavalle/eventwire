@@ -30,6 +30,10 @@ end
 RSpec.configure do |config|
   config.include Delorean
   config.include Helpers
+  
+  config.after do
+    Eventwire.driver = nil
+  end
 end
 
 $:.unshift File.dirname(__FILE__) + '/..'
