@@ -21,6 +21,7 @@ describe 'Project Management System' do
 
       after do
         stop_worker
+        purge
       end
 
       example 'Completing tasks should update stats' do
@@ -50,7 +51,12 @@ describe 'Project Management System' do
   end
 
   def start_worker
-    @t = Thread.new { Eventwire.driver.start }
+    @t = Thread.new { 
+      require 'rake'
+      require 'eventwire/tasks'
+      
+      Rake::Task['eventwire:work'].execute 
+    }
     @t.abort_on_exception = true
   end
 
@@ -62,12 +68,20 @@ describe 'Project Management System' do
   end
 
   def stop_worker
-    Eventwire.driver.stop
-    Eventwire.driver.purge
-    if @t
-      @t.join(1)
+    return unless @t.alive?
+    
+    Process.kill('INT', Process.pid)
+    
+    @t.join(1)
+    
+    if @t.alive?
       @t.kill
+      fail 'Worker should have stopped' 
     end
+  end
+  
+  def purge
+    Eventwire.driver.purge
   end
 
 end

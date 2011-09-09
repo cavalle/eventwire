@@ -28,4 +28,12 @@ module Eventwire
     @driver = klass ? klass.new : driver
   end
   
+  def self.start_worker
+    driver.start
+  end
+  
+  def self.stop_worker
+    driver.stop
+  end
+  
 end
