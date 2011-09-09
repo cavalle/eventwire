@@ -11,17 +11,25 @@ class Eventwire::Drivers::Redis
     ::Redis.new.rpush event_name, event_data.to_json
   end
 
-  def subscribe(event_name, handler_id = event_name, &handler)
-    @subscriptions << [event_name.to_s, handler_id]
+  def subscribe(event_name, handler_id, &handler)
     @handlers << [handler_id, handler]
+    ::Redis.new.sadd "event_handlers:#{event_name}", handler_id
+  end
+  
+  def subscriptions
+    redis = ::Redis.new
+    events = redis.keys('event_handlers:*')
+    events.map do |event|
+      [event.gsub(/^event_handlers:/,''), redis.smembers(event)]
+    end
   end
 
   def start
     EM.run do
-      @subscriptions.group_by(&:first).each do |event, subscriptions|
+      subscriptions.each do |event, subscriptions|
         subscribe_to_queue event do |data|
-          subscriptions.each do |event, queue|
-            redis = EM::Protocols::Redis.connect
+          redis = EM::Protocols::Redis.connect
+          subscriptions.each do |queue|
             redis.rpush queue, data
           end
         end
@@ -44,11 +52,16 @@ class Eventwire::Drivers::Redis
   end
 
   def stop
-    EM.stop
+    EM.stop if EM.reactor_running?
   end
   
   def parse_json(json)
     json != 'null' && JSON.parse(json) 
+  end
+  
+  def purge
+    redis = ::Redis.new
+    redis.flushdb
   end
   
 end

@@ -8,23 +8,29 @@ class Eventwire::Drivers::AMQP
     end    
   end
 
-  def subscribe(event_name, handler_id = event_name, &handler)
-    subscriptions << lambda { |mq|
-      fanout = mq.fanout(event_name)
-      mq.queue(handler_id, :durable => true).bind(fanout).subscribe do |json_data|
-        handler.call parse_json(json_data) 
-      end
-    }
+  def subscribe(event_name, handler_id, &handler)
+    subscriptions << [event_name, handler_id, handler]
   end
 
   def start
     AMQP.start do
-      subscriptions.each { |s| s.call(MQ) }
+      subscriptions.each {|subscription| bind_subscription(*subscription) }
     end
   end
 
   def stop
     AMQP.stop { EM.stop }
+  end
+  
+  def purge
+    Bunny.run do |mq|
+      subscriptions.group_by(&:first).each do |event_name, _|
+        mq.exchange(event_name, :type => :fanout).delete
+      end
+      subscriptions.group_by(&:second).each do |handler_id, _|
+        mq.queue(handler_id).delete
+      end
+    end
   end
   
   def parse_json(json)
@@ -33,6 +39,15 @@ class Eventwire::Drivers::AMQP
 
   def subscriptions
     @subscriptions ||= []
+  end
+  
+  def bind_subscription(event_name, handler_id, handler)    
+    fanout = MQ.fanout(event_name)
+    queue  = MQ.queue(handler_id)
+    
+    queue.bind(fanout).subscribe do |json_data|
+      handler.call parse_json(json_data) 
+    end
   end
   
 end

@@ -13,10 +13,11 @@ class Eventwire::Drivers::InProcess
     end
   end
   
-  def subscribe(event_name, handler_id = nil, &handler)
+  def subscribe(event_name, handler_id, &handler)
     handlers(event_name) << handler
   end
   
   def start; end
   def stop; end
+  def purge; end
 end

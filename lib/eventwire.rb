@@ -9,8 +9,8 @@ module Eventwire
     driver.publish event_name, event_data
   end
   
-  def self.subscribe(event_name, &handler)
-    driver.subscribe event_name do |data|
+  def self.subscribe(event_name, handler_id, &handler)
+    driver.subscribe event_name, handler_id do |data|
       handler.call build_event(data)
     end
   end
