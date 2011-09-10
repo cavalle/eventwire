@@ -2,6 +2,8 @@
 
 Eventwire is a generic and simple interface to various backends (AMQP, Redis, ZeroMQ) to help building event-driven systems
 
+_**WARNING:** This gem is in a very early stage of development. No first version has been released yet. That means that some of things described in this file might not be implemented, and those which are, might not be production ready._
+
 <img src="http://dl.dropbox.com/u/645329/eventwire.jpg" />
 
 ## What is Event Collaboration?
