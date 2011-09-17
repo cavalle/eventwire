@@ -8,11 +8,12 @@ gem 'i18n'
 gem 'delorean'
 
 # Drivers
-gem 'amqp',     :require => false
-gem 'bunny',    :require => false
-gem 'redis',    :require => false
-gem 'em-redis', :require => false
-gem 'ffi',      :require => false
-gem 'ffi-rzmq', :require => false
+gem 'amqp',            :require => false
+gem 'bunny',           :require => false
+gem 'redis',           :require => false
+gem 'em-redis',        :require => false
+gem 'ffi',             :require => false
+gem 'ffi-rzmq',        :require => false
+gem 'syslog_protocol', :require => false
 
 gemspec
