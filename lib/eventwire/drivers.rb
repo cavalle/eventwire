@@ -4,5 +4,6 @@ module Eventwire
     autoload :AMQP,      'eventwire/drivers/amqp'
     autoload :Redis,     'eventwire/drivers/redis'
     autoload :Zero,      'eventwire/drivers/zero'
+    autoload :Syslog,    'eventwire/drivers/syslog'
   end
 end
