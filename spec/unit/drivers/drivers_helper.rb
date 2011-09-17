@@ -3,22 +3,8 @@ require 'timeout'
 
 
 shared_examples_for 'a driver' do
-  
-  def start_worker
-    @t = Thread.new { subject.start }
-    @t.abort_on_exception = true
-    sleep 0.1
-  end
+  include WorkerHelper
 
-  after do
-    subject.stop
-    subject.purge
-    if @t
-      @t.join(1)
-      @t.kill
-    end
-  end
-  
   it 'should publish to 1 event handler' do
     executed = false
     subject.subscribe(:this_event, :this_subscriber) { executed = true }
@@ -143,14 +129,45 @@ shared_examples_for 'a driver with multiprocess support' do
         subject.start
       end
     end
-    
+
     process do
       subject.publish :this_event
     end
-    
+
     eventually do
       @shoutings.should == 1
     end
   end
-  
+
 end
+
+
+module WorkerHelper
+
+  def self.included(example_group)
+    example_group.after do
+      subject.stop
+      subject.purge
+      if @worker_thread
+        @worker_thread.join(1)
+        @worker_thread.kill
+      end
+    end
+  end
+
+  def start_worker
+    @worker_thread = Thread.new { subject.start }
+    @worker_thread.abort_on_exception = true
+    sleep 0.1
+  end
+
+  def sleep_until_no_nil
+    value        = yield
+    initial_time = Time.now.to_i
+    while ((value = yield) == nil && initial_time + 10 > Time.now.to_i)
+      sleep(0.01)
+    end
+    value
+  end
+end
+
