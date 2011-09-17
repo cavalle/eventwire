@@ -41,17 +41,21 @@ shared_examples_for 'a driver' do
       executed.should be_false
     }
   end
-  
-  it 'should pass the event data to the event handlers' do
-    event_data = nil
-    subject.subscribe(:this_event, :this_subscriber) { |data| event_data = data }
-    
-    start_worker
-    subject.publish :this_event, 'key1' => 'value1', 'key2' => 2
-    
-    eventually {
-      event_data.should == { 'key1' => 'value1', 'key2' => 2 }
-    }
+
+  unless superclass_metadata[:no_content_spec]
+
+    it 'should pass the event data to the event handlers' do
+      event_data = nil
+      subject.subscribe(:this_event, :this_subscriber) { |data| event_data = data }
+
+      start_worker
+      subject.publish :this_event, 'key1' => 'value1', 'key2' => 2
+
+      eventually {
+        event_data.should == { 'key1' => 'value1', 'key2' => 2 }
+      }
+    end
+
   end
 
 end
