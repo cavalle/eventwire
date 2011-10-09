@@ -87,6 +87,7 @@ shared_examples_for 'a driver with multi-process support' do
     end
     
     process do
+      wait_for_subscribers
       subject.publish :this_event
     end
     
@@ -107,6 +108,7 @@ shared_examples_for 'a driver with multi-process support' do
     end
     
     process do
+      wait_for_subscribers
       subject.publish :this_event
     end
     
@@ -124,6 +126,7 @@ shared_examples_for 'a driver with multi-process support' do
     end
     
     process do
+      wait_for_subscribers
       subject.publish :this_event
     end
     
@@ -149,7 +152,7 @@ shared_examples_for 'a driver with multi-process support' do
   end
   
   def end_processes
-    @children.each {|p| kill_and_wait(p) rescue nil }
+    @children.each {|p| kill_and_wait(p) }
   end
   
   def kill_and_wait(pid)
@@ -169,4 +172,7 @@ shared_examples_for 'a driver with multi-process support' do
     @shout_out.puts
   end
   
+  def wait_for_subscribers
+    sleep 0.1
+  end
 end

@@ -49,6 +49,8 @@ describe 'Project Management System' do
     end
 
   end
+  
+  private
 
   def start_worker
     @t = Thread.new { 
@@ -58,6 +60,7 @@ describe 'Project Management System' do
       Rake::Task['eventwire:work'].execute 
     }
     @t.abort_on_exception = true
+    sleep 0.1
   end
 
   def load_environment
