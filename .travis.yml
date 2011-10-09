@@ -5,4 +5,4 @@ rvm:
   - 1.8.7
   - ree
 env:
-  - SLEEP_FACTOR=3
+  - SLEEP_FACTOR=5
