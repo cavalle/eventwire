@@ -1,11 +1,10 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in eventwire.gemspec
-
 gem 'rspec'
 gem 'activesupport', :require => 'active_support/all'
 gem 'i18n'
 gem 'delorean'
+gem 'rake'
 
 # Drivers
 gem 'amqp',     :require => false
@@ -15,4 +14,7 @@ gem 'em-redis', :require => false
 gem 'ffi',      :require => false
 gem 'ffi-rzmq', :require => false
 
+gem 'SystemTimer', :require => false, :platforms => :mri_18
+
+# Specify your gem's dependencies in eventwire.gemspec
 gemspec

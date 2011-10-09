@@ -70,7 +70,7 @@ describe 'Project Management System' do
   def stop_worker
     return unless @t.alive?
     
-    Process.kill('INT', Process.pid)
+    Eventwire.stop_worker
     
     @t.join(1)
     

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'timeout'
 
-shared_examples_for 'a driver' do
+shared_examples_for 'a driver with single-process support' do
   
   def start_worker
     @t = Thread.new { subject.start }
@@ -69,35 +69,15 @@ shared_examples_for 'a driver' do
   
 end
 
-shared_examples_for 'a driver with multiprocess support' do
+shared_examples_for 'a driver with multi-process support' do
 
   before do
-    trap('USR1') { @shoutings += 1 }
-    @children = []
-    @shoutings = 0
-    @ppid = Process.pid
-  end
-  
-  def process(&block)
-    pid = fork do
-      trap('INT') { subject.stop; subject.purge }
-      block.call
-    end
-    @children << pid
-    pid
+    initialize_proccesses   
+    initialize_shouting
   end
   
   after do
-    @children.each {|p| kill_and_wait(p) rescue nil }
-  end
-  
-  def kill_and_wait(pid)
-    Process.kill('INT', pid)
-    Process.wait(pid)
-  end
-  
-  def shout!
-    Process.kill 'USR1', @ppid
+    end_processes
   end
   
   example 'one subscriber' do
@@ -150,6 +130,43 @@ shared_examples_for 'a driver with multiprocess support' do
     eventually do
       @shoutings.should == 1
     end
+  end
+  
+  private
+  
+  def initialize_proccesses
+    @children = []
+    @ppid = Process.pid
+  end
+  
+  def process(&block)
+    pid = fork do
+      trap('INT') { subject.stop; subject.purge }
+      block.call
+    end
+    @children << pid
+    pid
+  end
+  
+  def end_processes
+    @children.each {|p| kill_and_wait(p) rescue nil }
+  end
+  
+  def kill_and_wait(pid)
+    Process.kill('INT', pid)
+    Process.wait(pid)
+  end
+  
+  def initialize_shouting
+    @shout_in, @shout_out = IO.pipe
+    @shoutings = 0
+    Thread.new do
+      @shout_in.each { @shoutings += 1 }
+    end
+  end
+  
+  def shout!
+    @shout_out.puts
   end
   
 end

@@ -1,3 +1,5 @@
+require 'json'
+
 module Eventwire
   module Drivers
     autoload :InProcess, 'eventwire/drivers/in_process'
