@@ -11,8 +11,11 @@ gem 'amqp',     :require => false
 gem 'bunny',    :require => false
 gem 'redis',    :require => false
 gem 'em-redis', :require => false
-gem 'ffi',      :require => false
-gem 'ffi-rzmq', :require => false
+
+unless ENV['TRAVIS']
+  gem 'ffi',      :require => false
+  gem 'ffi-rzmq', :require => false
+end
 
 gem 'SystemTimer', :require => false, :platforms => :mri_18
 
