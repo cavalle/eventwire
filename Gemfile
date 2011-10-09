@@ -7,7 +7,7 @@ gem 'delorean'
 gem 'rake'
 
 # Drivers
-gem 'amqp',     :require => false
+gem 'amqp', '0.7.4', :require => false
 gem 'bunny',    :require => false
 gem 'redis',    :require => false
 gem 'em-redis', :require => false

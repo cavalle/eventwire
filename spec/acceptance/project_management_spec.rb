@@ -80,11 +80,8 @@ describe 'Project Management System' do
     Eventwire.stop_worker
     
     @t.join(1)
-    
-    if @t.alive?
-      @t.kill
-      fail 'Worker should have stopped' 
-    end
+    fail 'Worker should have stopped' if @t.alive?
+    @t.kill # even if not alive, it seems that in 1.8.7 we need to kill it
   end
   
   def purge
