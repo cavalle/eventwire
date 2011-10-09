@@ -1,4 +1,5 @@
-# Eventwire: Event Collaboration for the Masses
+# Eventwire: Event Collaboration for the Masses[ ![Build Status](https://secure.travis-ci.org/cavalle/eventwire.png?branch=master)](http://travis-ci.org/cavalle/eventwire)
+
 
 Eventwire is a generic and simple interface to various backends (AMQP, Redis, ZeroMQ) to help building event-driven systems
 
