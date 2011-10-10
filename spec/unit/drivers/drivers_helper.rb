@@ -116,6 +116,36 @@ shared_examples_for 'a driver with multi-process support' do
       @shoutings.should == 2
     end
   end
+  
+  example 'second subscriber coming later' do
+    process do
+      subject.subscribe(:this_event, :first_subscriber) { shout! }
+      subject.start
+    end
+    
+    process do
+      wait_for_subscribers
+      subject.publish :this_event
+    end
+    
+    eventually do
+      @shoutings.should == 1
+    end
+    
+    process do
+      subject.subscribe(:this_event, :other_subscriber) { shout! }
+      subject.start
+    end
+    
+    process do
+      wait_for_subscribers
+      subject.publish :this_event
+    end
+    
+    eventually do
+      @shoutings.should == 3
+    end
+  end
 
   example 'several instances of same subscriber' do
     2.times do
