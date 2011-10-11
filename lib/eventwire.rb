@@ -14,7 +14,7 @@ module Eventwire
       begin
         handler.call build_event(data) 
       rescue Exception => ex
-        @error_handler.call(ex)
+        @error_handler.call(ex) if @error_handler
       end
     end
   end
