@@ -35,6 +35,22 @@ describe Eventwire::Subscriber do
       ThisModule.parent.send :remove_const, :ThisModule
     end
     
+    it 'should subscribe with a handler that is fault tolerant' do
+      Eventwire.on_error do |e| 
+        @error = e
+      end
+      
+      Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+        handler.call
+      end
+      
+      subject.on :task_completed do
+        raise 'This exception should be catched'
+      end
+      
+      @error.message.should == 'This exception should be catched'
+    end
+    
   end
   
 end

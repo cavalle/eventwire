@@ -11,7 +11,11 @@ module Eventwire
   
   def self.subscribe(event_name, handler_id, &handler)
     driver.subscribe event_name, handler_id do |data|
-      handler.call build_event(data)
+      begin
+        handler.call build_event(data) 
+      rescue Exception => ex
+        @error_handler.call(ex)
+      end
     end
   end
   
@@ -34,6 +38,10 @@ module Eventwire
   
   def self.stop_worker
     driver.stop
+  end
+  
+  def self.on_error(&block)
+    @error_handler = block
   end
   
 end
