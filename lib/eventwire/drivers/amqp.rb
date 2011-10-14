@@ -42,12 +42,13 @@ class Eventwire::Drivers::AMQP
   end
   
   def bind_subscription(event_name, handler_id, handler)   
-    mq = MQ.new 
-    fanout = mq.fanout(event_name.to_s)
-    queue  = mq.queue(handler_id.to_s)
+    AMQP::Channel.new do |ch|
+      fanout = ch.fanout(event_name.to_s)
+      queue  = ch.queue(handler_id.to_s)
 
-    queue.bind(fanout).subscribe do |json_data|      
-      handler.call parse_json(json_data) 
+      queue.bind(fanout).subscribe do |json_data|
+        handler.call parse_json(json_data)
+      end
     end
   end
   
