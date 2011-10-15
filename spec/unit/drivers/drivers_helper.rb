@@ -174,7 +174,7 @@ shared_examples_for 'a driver with multi-process support' do
   
   def process(&block)
     pid = fork do
-      trap('INT') { subject.stop; subject.purge }
+      trap('INT') { subject.stop; subject.purge; exit }
       block.call
     end
     @children << pid
