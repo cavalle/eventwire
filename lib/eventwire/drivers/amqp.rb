@@ -2,10 +2,30 @@ require 'bunny'
 require 'amqp'
 
 class Eventwire::Drivers::AMQP
+  
+  class EMWrapper
+    def stop
+      EM.stop unless @reactor_running
+    end
+    
+    def initialize(&block)
+      @reactor_running = EM.reactor_running?
+      if @reactor_running
+        block.call(self)
+      else
+        EM.run { block.call(self) }
+      end
+    end
+  end
+  
   def publish(event_name, event_data = nil)
-    Bunny.run do |mq|
-      mq.exchange(event_name.to_s, :type => :fanout).publish(event_data.to_json)
-    end    
+    EMWrapper.new do |em|
+      connection = AMQP.connect
+      channel  = AMQP::Channel.new(connection)
+      channel.fanout(event_name.to_s).publish(event_data.to_json) do
+        connection.close { em.stop }
+      end
+    end
   end
 
   def subscribe(event_name, handler_id, &handler)
@@ -13,13 +33,17 @@ class Eventwire::Drivers::AMQP
   end
 
   def start
-    AMQP.start do
-      subscriptions.each {|subscription| bind_subscription(*subscription) }
+    EMWrapper.new do |em|
+      @em = em
+      @connection = AMQP.connect
+      AMQP::Channel.new(@connection) do |ch|
+        subscriptions.each {|subscription| bind_subscription(*([ch] + subscription)) }
+      end
     end
   end
 
   def stop
-    AMQP.stop { EM.stop }
+    @connection.close { @em.stop }
   end
   
   def purge
@@ -41,14 +65,12 @@ class Eventwire::Drivers::AMQP
     @subscriptions ||= []
   end
   
-  def bind_subscription(event_name, handler_id, handler)   
-    AMQP::Channel.new do |ch|
-      fanout = ch.fanout(event_name.to_s)
-      queue  = ch.queue(handler_id.to_s)
+  def bind_subscription(ch, event_name, handler_id, handler)   
+    fanout = ch.fanout(event_name.to_s)
+    queue  = ch.queue(handler_id.to_s)
 
-      queue.bind(fanout).subscribe do |json_data|
-        handler.call parse_json(json_data)
-      end
+    queue.bind(fanout).subscribe do |json_data|
+      handler.call parse_json(json_data)
     end
   end
   
