@@ -37,7 +37,7 @@ RSpec.configure do |config|
   config.include Helpers
   
   config.after do
-    Eventwire.driver = nil
+    Eventwire.reset!
   end
 end
 
