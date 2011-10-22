@@ -46,9 +46,11 @@ module Eventwire
         begin
           logger.info "Starting to process `#{event_name}` with handler `#{handler_id}` and data `#{data.inspect}`"
           handler.call build_event(data) 
-          logger.info "End processing `task_completed`"
         rescue Exception => ex
+          logger.error "\nAn error occurred: `#{ex.message}`\n#{ex.backtrace.join("\n")}\n"
           @error_handler.call(ex) if @error_handler
+        ensure
+          logger.info "End processing `task_completed`"
         end
       end
     end

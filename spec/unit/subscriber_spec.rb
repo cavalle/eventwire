@@ -4,8 +4,6 @@ describe Eventwire::Subscriber do
   
   describe '#on' do
     
-    before { Eventwire.on_error {|ex| raise ex } }
-    
     subject { class_including Eventwire::Subscriber }
 
     it 'should subscribe to the event using the current driver' do
@@ -40,8 +38,6 @@ describe Eventwire::Subscriber do
     describe 'Error handling' do
           
       it 'should subscribe with a handler that is fault tolerant' do
-        Eventwire.on_error { }
-        
         Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
           handler.call
         end
@@ -66,12 +62,27 @@ describe Eventwire::Subscriber do
         
         error.message.should == 'error!'
       end
+      
+      it 'should subscribe with a handler that logs when an exception happens' do
+        io = StringIO.new
+        Eventwire.logger = Logger.new(io)
+        
+        Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+          handler.call
+        end
+      
+        subject.on(:task_completed) { raise 'This exception should be logged' }
+        error_backtrace = "#{__FILE__}:#{__LINE__-1}"
+        
+        io.string.should include('This exception should be logged')
+        io.string.should include(error_backtrace)
+      end
     
     end
     
     describe 'Logging' do
       
-      it 'should subscribe with a handler that logs if logger is present' do
+      it 'should subscribe with a handler that logs the start and end of event processing' do
         ThisSubscriber = subject
         io = StringIO.new
         Eventwire.logger = Logger.new(io)
@@ -87,6 +98,20 @@ Starting to process `task_completed` with handler `ThisSubscriber::1` and data `
 Hello from the handler
 End processing `task_completed`
 OUTPUT
+      end
+      
+      it 'should subscribe with a handler that logs even when an exception occur' do
+        io = StringIO.new
+        Eventwire.logger = Logger.new(io)
+        
+        Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+          handler.call
+        end
+      
+        subject.on(:task_completed) { raise }
+        
+        io.string.should include('Starting to process')
+        io.string.should include('End processing')
       end
       
     end
