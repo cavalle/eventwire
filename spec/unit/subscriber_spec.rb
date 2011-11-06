@@ -14,11 +14,11 @@ describe Eventwire::Subscriber do
     
     it 'should subscribe with a handler that builds an event object' do
       Eventwire.driver.should_receive(:subscribe) do |event_name, _, &handler|
-        handler.call(:task_name => 'Cleaning').should == 'Cleaning'
-        handler.call('task_name' => 'Cleaning').should == 'Cleaning'
+        handler.call(:task_name => 'Cleaning')
+        handler.call('task_name' => 'Cleaning')
       end
       
-      subject.on(:task_completed) { |data| data.task_name }
+      subject.on(:task_completed) { |data| data.task_name.should == 'Cleaning' }
     end
     
     it 'should subscribe to the event with incremental handler ids based on the class name' do
@@ -62,7 +62,58 @@ describe Eventwire::Subscriber do
         
         error.message.should == 'error!'
       end
+      
+      it 'should subscribe with a handler that logs when an exception happens' do
+        io = StringIO.new
+        Eventwire.logger = Logger.new(io)
+        
+        Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+          handler.call
+        end
+      
+        subject.on(:task_completed) { raise 'This exception should be logged' }
+        error_backtrace = "#{__FILE__}:#{__LINE__-1}"
+        
+        io.string.should include('This exception should be logged')
+        io.string.should include(error_backtrace)
+      end
     
+    end
+    
+    describe 'Logging' do
+      
+      it 'should subscribe with a handler that logs the start and end of event processing' do
+        ThisSubscriber = subject
+        io = StringIO.new
+        Eventwire.logger = Logger.new(io)
+        
+        Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+          handler.call :task_name => 'Cleaning'
+        end
+      
+        subject.on(:task_completed) { io.puts 'Hello from the handler' }
+        
+        io.string.should == <<-OUTPUT
+Starting to process `task_completed` with handler `ThisSubscriber::1` and data `{:task_name=>"Cleaning"}`
+Hello from the handler
+End processing `task_completed`
+OUTPUT
+      end
+      
+      it 'should subscribe with a handler that logs even when an exception occur' do
+        io = StringIO.new
+        Eventwire.logger = Logger.new(io)
+        
+        Eventwire.driver.should_receive :subscribe do |event_name, _, &handler| 
+          handler.call
+        end
+      
+        subject.on(:task_completed) { raise }
+        
+        io.string.should include('Starting to process')
+        io.string.should include('End processing')
+      end
+      
     end
     
   end
