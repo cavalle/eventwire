@@ -5,7 +5,7 @@ class Eventwire::Drivers::Zero
     ctx = ZMQ::Context.new
     s = ctx.socket ZMQ::PUSH
     s.connect("tcp://127.0.0.1:5560")
-    s.send_string([event_name, event_data].to_json)
+    s.send_string(ActiveSupport::JSON.encode([event_name, event_data]))
     s.close
     ctx.terminate
   end
@@ -42,7 +42,7 @@ class Eventwire::Drivers::Zero
   end
   
   def parse_json(json)
-    json != 'null' && JSON.parse(json) 
+    json != 'null' && ActiveSupport::JSON.decode(json)
   end
   
   def purge; end

@@ -10,7 +10,7 @@ class Eventwire::Drivers::Redis
     redis = ::Redis.new
     handlers = redis.smembers("event_handlers:#{event_name}")
     handlers.each do |handler|
-      redis.rpush handler, event_data.to_json
+      redis.rpush handler, ActiveSupport::JSON.encode(event_data)
     end
   end
 
@@ -42,7 +42,7 @@ class Eventwire::Drivers::Redis
   end
   
   def parse_json(json)
-    json != 'null' && JSON.parse(json) 
+    json != 'null' && ActiveSupport::JSON.decode(json)
   end
   
   def purge
