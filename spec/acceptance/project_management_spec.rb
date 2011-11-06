@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe 'Project Management System' do
   
-  drivers = %w{InProcess AMQP Redis Zero}
-  
-  drivers.delete('Zero') if ENV['TRAVIS']
+  drivers = %w{InProcess AMQP Redis}
 
   drivers.each do |driver|
 

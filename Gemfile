@@ -14,11 +14,6 @@ gem 'redis',    :require => false
 gem 'em-redis', :require => false
 gem 'mongo',    :require => false
 
-unless ENV['TRAVIS']
-  gem 'ffi',      :require => false
-  gem 'ffi-rzmq', :require => false
-end
-
 gem 'SystemTimer', :require => false, :platforms => :mri_18
 
 # Specify your gem's dependencies in eventwire.gemspec
