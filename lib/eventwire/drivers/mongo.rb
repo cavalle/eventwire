@@ -19,10 +19,9 @@ class Eventwire::Drivers::Mongo
     @handlers << [handler_id, handler]
     
     collection = db.collection('event_handlers')
-    collection.find_and_modify({
-      query: {:handler => handler_id},
-      update: {:handler => handler_id, event_name: event_name},
-      upsert: true})
+    collection.find_and_modify :query =>  {:handler => handler_id},
+                               :update => {:handler => handler_id, :event_name => event_name},
+                               :upsert => true
   end
 
   def start
