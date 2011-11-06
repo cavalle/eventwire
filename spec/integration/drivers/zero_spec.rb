@@ -1,4 +1,4 @@
-require 'unit/drivers/drivers_helper'
+require 'integration/drivers/drivers_helper'
 
 unless ENV['TRAVIS']
 
