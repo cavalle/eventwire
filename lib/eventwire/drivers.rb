@@ -7,5 +7,6 @@ module Eventwire
     autoload :Bunny,     'eventwire/drivers/bunny'
     autoload :Redis,     'eventwire/drivers/redis'
     autoload :Zero,      'eventwire/drivers/zero'
+    autoload :Mongo,     'eventwire/drivers/mongo'
   end
 end
