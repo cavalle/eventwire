@@ -10,7 +10,7 @@ class Eventwire::Drivers::Redis
     redis = ::Redis.new
     handlers = redis.smembers("event_handlers:#{event_name}")
     handlers.each do |handler|
-      redis.rpush handler, event_data.to_json
+      redis.rpush handler, event_data
     end
   end
 
@@ -23,7 +23,7 @@ class Eventwire::Drivers::Redis
     EM.run do
       @handlers.each do |queue, handler|
         subscribe_to_queue queue do |json_event|
-          handler.call parse_json(json_event)
+          handler.call json_event
         end
       end 
     end
@@ -39,10 +39,6 @@ class Eventwire::Drivers::Redis
 
   def stop
     EM.stop if EM.reactor_running?
-  end
-  
-  def parse_json(json)
-    json != 'null' && JSON.parse(json) 
   end
   
   def purge

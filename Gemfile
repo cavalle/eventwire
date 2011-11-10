@@ -19,6 +19,9 @@ gem 'redis',    :require => false
 gem 'em-redis', :require => false
 gem 'mongo',    :require => false
 
+# Middleware
+gem 'json', :require => false
+
 gem 'SystemTimer', :require => false, :platforms => :mri_18
 
 # Specify your gem's dependencies in eventwire.gemspec

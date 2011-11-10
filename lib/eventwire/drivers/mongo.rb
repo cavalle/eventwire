@@ -11,7 +11,7 @@ class Eventwire::Drivers::Mongo
     collection = db.collection('event_handlers')
     collection.find(:event_name => event_name).each do |handler|
       queue = db.collection(handler['handler'])
-      queue.save({:event_data => event_data.to_json})
+      queue.save({:event_data => event_data})
     end
   end
 
@@ -32,7 +32,7 @@ class Eventwire::Drivers::Mongo
         break unless @started
         queue = db.collection(queue_name)
         if event_data = queue.find_and_modify({:remove => true})
-          handler.call parse_json(event_data['event_data'])
+          handler.call event_data['event_data']
         end
       end
     end
@@ -48,10 +48,6 @@ class Eventwire::Drivers::Mongo
 
   def purge
     Mongo::Connection.new.drop_database(DB_NAME)
-  end
-
-  def parse_json(json)
-    json != 'null' && JSON.parse(json)
   end
   
 end

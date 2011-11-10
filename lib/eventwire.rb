@@ -59,7 +59,8 @@ module Eventwire
     def middleware
       @middleware ||= [ [Eventwire::Middleware::ErrorHandler, {:error_handler => Eventwire.error_handler, :logger => Eventwire.logger}],
                         [Eventwire::Middleware::Logger, {:logger => Eventwire.logger}],
-                        Eventwire::Middleware::DataObjects ]
+                         Eventwire::Middleware::JSONSerializer,
+                         Eventwire::Middleware::DataObjects ]
     end
     
     def decorate(driver)

@@ -4,7 +4,7 @@ class Eventwire::Drivers::Bunny
   
   def publish(event_name, event_data = nil)
     Bunny.run do |mq|
-      mq.exchange(event_name.to_s, :type => :fanout).publish(event_data.to_json)
+      mq.exchange(event_name.to_s, :type => :fanout).publish(event_data)
     end
   end
 
@@ -26,7 +26,7 @@ class Eventwire::Drivers::Bunny
         event_name = msg[:delivery_details][:exchange]
         event_data = msg[:payload]
         (subscriptions[event_name.to_s] || []).each do |handler|
-          handler.call parse_json(event_data)
+          handler.call event_data
         end
       end
     end
@@ -45,10 +45,6 @@ class Eventwire::Drivers::Bunny
     end
   end
   
-  def parse_json(json)
-    json != 'null' && JSON.parse(json) 
-  end
-
   def subscriptions
     @subscriptions ||= {}
   end

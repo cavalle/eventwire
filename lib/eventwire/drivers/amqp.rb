@@ -4,7 +4,7 @@ require 'amqp'
 class Eventwire::Drivers::AMQP
   def publish(event_name, event_data = nil)
     Bunny.run do |mq|
-      mq.exchange(event_name.to_s, :type => :fanout).publish(event_data.to_json)
+      mq.exchange(event_name.to_s, :type => :fanout).publish(event_data)
     end    
   end
 
@@ -32,10 +32,6 @@ class Eventwire::Drivers::AMQP
       end
     end
   end
-  
-  def parse_json(json)
-    json != 'null' && JSON.parse(json) 
-  end
 
   def subscriptions
     @subscriptions ||= []
@@ -47,7 +43,7 @@ class Eventwire::Drivers::AMQP
       queue  = ch.queue(handler_id.to_s)
 
       queue.bind(fanout).subscribe do |json_data|
-        handler.call parse_json(json_data)
+        handler.call json_data
       end
     end
   end

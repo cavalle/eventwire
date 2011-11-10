@@ -60,10 +60,10 @@ shared_examples_for 'a driver with single-process support' do
     subject.subscribe(:this_event, :this_subscriber) { |data| event_data = data }
     
     start_worker
-    subject.publish :this_event, 'key1' => 'value1', 'key2' => 2
+    subject.publish :this_event, 'event_data'
     
     eventually {
-      event_data.should == { 'key1' => 'value1', 'key2' => 2 }
+      event_data.should == 'event_data'
     }
   end
   
