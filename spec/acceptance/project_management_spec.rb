@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe 'Project Management System' do
+  
+  drivers = %w{InProcess AMQP Redis}
 
-  %w{InProcess AMQP Redis Zero}.each do |driver|
+  drivers.each do |driver|
 
     context "using the #{driver} driver" do
 
@@ -49,6 +51,8 @@ describe 'Project Management System' do
     end
 
   end
+  
+  private
 
   def start_worker
     @t = Thread.new { 
@@ -58,6 +62,7 @@ describe 'Project Management System' do
       Rake::Task['eventwire:work'].execute 
     }
     @t.abort_on_exception = true
+    sleep 0.1
   end
 
   def load_environment
@@ -70,14 +75,11 @@ describe 'Project Management System' do
   def stop_worker
     return unless @t.alive?
     
-    Process.kill('INT', Process.pid)
+    Eventwire.stop_worker
     
     @t.join(1)
-    
-    if @t.alive?
-      @t.kill
-      fail 'Worker should have stopped' 
-    end
+    fail 'Worker should have stopped' if @t.alive?
+    @t.kill # even if not alive, it seems that in 1.8.7 we need to kill it
   end
   
   def purge

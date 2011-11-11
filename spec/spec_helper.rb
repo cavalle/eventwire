@@ -27,12 +27,17 @@ module Helpers
 
 end
 
+def sleep(time)
+  factor = ENV['SLEEP_FACTOR'] || 1
+  super time * factor.to_f
+end
+
 RSpec.configure do |config|
   config.include Delorean
   config.include Helpers
 
   config.after do
-    Eventwire.driver = nil
+    Eventwire.reset!
   end
 end
 

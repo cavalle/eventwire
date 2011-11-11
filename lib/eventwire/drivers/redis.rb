@@ -3,38 +3,24 @@ require 'em-redis'
 
 class Eventwire::Drivers::Redis
   def initialize
-    @subscriptions = []
-    @handlers      = []
+    @handlers = []
   end
   
   def publish(event_name, event_data = nil)
-    ::Redis.new.rpush event_name, event_data.to_json
+    redis = ::Redis.new
+    handlers = redis.smembers("event_handlers:#{event_name}")
+    handlers.each do |handler|
+      redis.rpush handler, event_data.to_json
+    end
   end
 
   def subscribe(event_name, handler_id, &handler)
     @handlers << [handler_id, handler]
     ::Redis.new.sadd "event_handlers:#{event_name}", handler_id
   end
-  
-  def subscriptions
-    redis = ::Redis.new
-    events = redis.keys('event_handlers:*')
-    events.map do |event|
-      [event.gsub(/^event_handlers:/,''), redis.smembers(event)]
-    end
-  end
 
   def start
     EM.run do
-      subscriptions.each do |event, subscriptions|
-        subscribe_to_queue event do |data|
-          redis = EM::Protocols::Redis.connect
-          subscriptions.each do |queue|
-            redis.rpush queue, data
-          end
-        end
-      end
-
       @handlers.each do |queue, handler|
         subscribe_to_queue queue do |json_event|
           handler.call parse_json(json_event)
