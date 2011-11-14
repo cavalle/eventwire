@@ -5,7 +5,7 @@ describe Eventwire::Middleware::Logger do
   let(:app) { mock }
   let(:io) { StringIO.new }
   
-  subject { Eventwire::Middleware::Logger.new(app) }
+  subject { Eventwire::Middleware::Logger.new(app, :logger => Logger.new(io)) }
   
   describe 'subscribe' do
     it 'should call app’s subscribe' do
@@ -15,8 +15,6 @@ describe Eventwire::Middleware::Logger do
     end
     
     it 'should decorate the handler with logging' do
-      Eventwire.logger = Logger.new(io)
-      
       app.stub(:subscribe) do |_, _, handler|
         handler.call(:data => 'hey')
       end
@@ -33,8 +31,6 @@ OUTPUT
     end
     
     it 'should decorate the handler with logging when exceptions happens' do
-      Eventwire.logger = Logger.new(io)
-      
       app.stub(:subscribe) do |_, _, handler|
         handler.call rescue nil
       end

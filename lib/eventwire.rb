@@ -55,26 +55,22 @@ module Eventwire
     def subscribe(event_name, handler_id, &handler)
       Eventwire.driver.subscribe event_name, handler_id, &handler
     end
-    
-    class Middleware
-      def initialize(app)
-        @app = app
-      end
-      
-      def method_missing(meth, *args, &blk)
-        @app.send(meth, *args, &blk)
-      end
-    end
-    
+
     def middleware
-      @middleware ||= [ Eventwire::Middleware::ErrorHandler, 
-                        Eventwire::Middleware::Logger, 
+      @middleware ||= [ [Eventwire::Middleware::ErrorHandler, :error_handler => Eventwire.error_handler],
+                        [Eventwire::Middleware::Logger, :logger => Eventwire.logger],
                         Eventwire::Middleware::DataObjects ]
     end
     
     def decorate(driver)
-      middleware.inject(driver) do |driver, klass|
-        klass.new(driver)
+      middleware.inject(driver) do |driver, args|
+        args = Array(args)
+        klass = args.shift
+        if args && args.any?
+          klass.new(driver, *args)
+        else
+          klass.new(driver)
+        end
       end
     end
 

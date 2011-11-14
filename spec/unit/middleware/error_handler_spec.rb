@@ -6,7 +6,7 @@ describe Eventwire::Middleware::ErrorHandler do
   let(:app) { mock }
   let(:io) { StringIO.new }
   
-  subject { Eventwire::Middleware::ErrorHandler.new(app) }
+  subject { Eventwire::Middleware::ErrorHandler.new(app, :logger => Logger.new(io)) }
   
   describe 'subscribe' do
     it 'should call app’s subscribe' do
@@ -24,28 +24,28 @@ describe Eventwire::Middleware::ErrorHandler do
         raise 'This exception should be catched'
       end
     end
-    
-    it 'should make the handler run on_error block if present' do
-      error = nil
-      
-      Eventwire.on_error do |e| 
-        error = e
+
+    context 'when error_handler is present' do
+      it 'should make the handler run the block' do
+        error = nil
+
+        subject = Eventwire::Middleware::ErrorHandler.new(app,
+                                                          :logger => Logger.new(io),
+                                                          :error_handler => lambda { |e| error = e })
+
+        app.stub :subscribe do |_, _, handler|
+          handler.call
+        end
+
+        subject.subscribe :event_name, :handler_id do
+          raise 'error!'
+        end
+
+        error.message.should == 'error!'
       end
-      
-      app.stub :subscribe do |_, _, handler| 
-        handler.call
-      end
-    
-      subject.subscribe :event_name, :handler_id do
-        raise 'error!'
-      end
-      
-      error.message.should == 'error!'
     end
     
     it 'should make the handler log when an exception happens' do
-      Eventwire.logger = Logger.new(io)
-      
       app.stub :subscribe do |_, _, handler| 
         handler.call
       end
