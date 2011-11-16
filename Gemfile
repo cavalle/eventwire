@@ -7,8 +7,10 @@ gem 'delorean'
 gem 'rake'
 gem 'bson_ext'
 
-gem 'ruby-debug',   :platforms => :mri_18
-gem 'ruby-debug19', :platforms => :mri_19
+unless ENV["CI"]
+  gem 'ruby-debug',   :platforms => :mri_18
+  gem 'ruby-debug19', :platforms => :mri_19
+end
 
 # Drivers
 gem 'amqp',     :require => false
