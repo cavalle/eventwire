@@ -43,6 +43,22 @@ End processing `event_name`
 OUTPUT
     end
     
+    describe 'publish' do
+      it 'should call app’s publish' do
+        app.should_receive(:publish).with(:event_name, :task_name => 'Cleaning')
+        
+        subject.publish :event_name, :task_name => 'Cleaning'
+      end
+      
+      it 'should log when publishing' do
+        app.stub(:publish)
+        
+        subject.publish :task_created, :task_name => 'Cleaning'
+
+        io.string.should == "Event published `task_created` with data `{:task_name=>\"Cleaning\"}`\n"
+      end
+    end
+    
   end
   
 end

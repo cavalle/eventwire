@@ -49,11 +49,10 @@ module Eventwire
   
     def publish(event_name, event_data = nil)
       driver.publish event_name, event_data
-      logger.info "Event published `#{event_name}` with data `#{event_data.inspect}`"
     end
     
     def subscribe(event_name, handler_id, &handler)
-      Eventwire.driver.subscribe event_name, handler_id, &handler
+      driver.subscribe event_name, handler_id, &handler
     end
 
     def middleware

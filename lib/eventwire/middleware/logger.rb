@@ -18,6 +18,11 @@ module Eventwire
         end
       end
       
+      def publish(event_name, event_data = nil)
+        @app.publish event_name, event_data
+        @logger.info "Event published `#{event_name}` with data `#{event_data.inspect}`"
+      end
+      
     end
   end
 end
