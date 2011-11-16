@@ -20,7 +20,8 @@ gem 'em-redis', :require => false
 gem 'mongo',    :require => false
 
 # Middleware
-gem 'json', :require => false
+gem 'json',    :require => false
+gem 'msgpack', :require => false
 
 gem 'SystemTimer', :require => false, :platforms => :mri_18
 
