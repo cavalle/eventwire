@@ -57,8 +57,8 @@ module Eventwire
     end
 
     def middleware
-      @middleware ||= [ [Eventwire::Middleware::ErrorHandler, :error_handler => Eventwire.error_handler],
-                        [Eventwire::Middleware::Logger, :logger => Eventwire.logger],
+      @middleware ||= [ [Eventwire::Middleware::ErrorHandler, {:error_handler => Eventwire.error_handler, :logger => Eventwire.logger}],
+                        [Eventwire::Middleware::Logger, {:logger => Eventwire.logger}],
                         Eventwire::Middleware::DataObjects ]
     end
     

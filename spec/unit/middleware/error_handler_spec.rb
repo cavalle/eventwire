@@ -4,9 +4,7 @@ require 'spec_helper'
 describe Eventwire::Middleware::ErrorHandler do
   
   let(:app) { mock }
-  let(:io) { StringIO.new }
-  
-  subject { Eventwire::Middleware::ErrorHandler.new(app, :logger => Logger.new(io)) }
+  subject { Eventwire::Middleware::ErrorHandler.new(app) }
   
   describe 'subscribe' do
     it 'should call app’s subscribe' do
@@ -26,13 +24,11 @@ describe Eventwire::Middleware::ErrorHandler do
     end
 
     context 'when error_handler is present' do
+      subject { Eventwire::Middleware::ErrorHandler.new(app, :error_handler => lambda { |e| @error = e }) }
+      
       it 'should make the handler run the block' do
-        error = nil
-
-        subject = Eventwire::Middleware::ErrorHandler.new(app,
-                                                          :logger => Logger.new(io),
-                                                          :error_handler => lambda { |e| error = e })
-
+        @error = nil
+        
         app.stub :subscribe do |_, _, handler|
           handler.call
         end
@@ -41,20 +37,25 @@ describe Eventwire::Middleware::ErrorHandler do
           raise 'error!'
         end
 
-        error.message.should == 'error!'
+        @error.message.should == 'error!'
       end
     end
     
-    it 'should make the handler log when an exception happens' do
-      app.stub :subscribe do |_, _, handler| 
-        handler.call
-      end
+    context 'when logger is present' do
+      let(:io) { StringIO.new }
+      subject { Eventwire::Middleware::ErrorHandler.new(app, :logger => Logger.new(io)) }
+          
+      it 'should make the handler log when an exception happens' do
+        app.stub :subscribe do |_, _, handler| 
+          handler.call
+        end
     
-      subject.subscribe(:event_name, :handler_id) { raise 'error!' }
-      error_backtrace = "#{__FILE__}:#{__LINE__-1}"
+        subject.subscribe(:event_name, :handler_id) { raise 'error!' }
+        error_backtrace = "#{__FILE__}:#{__LINE__-1}"
       
-      io.string.should include('error!')
-      io.string.should include(error_backtrace)
+        io.string.should include('error!')
+        io.string.should include(error_backtrace)
+      end
     end
   end
   
