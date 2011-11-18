@@ -85,7 +85,13 @@ describe Eventwire::Subscriber do
       
       io.string.should be_blank
     end
-    
+
+    it 'should subscribe to multiple events' do
+      Eventwire.driver.should_receive(:subscribe).with(:task_completed, anything)
+      Eventwire.driver.should_receive(:subscribe).with(:project_completed, anything)
+
+      subject.on(:task_completed, :project_completed) { }
+    end
   end
   
 end

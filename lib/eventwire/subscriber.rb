@@ -6,8 +6,10 @@ module Eventwire
     end
     
     module DSL
-      def on(event_name, &handler)
-        Eventwire.subscribe event_name, handler_id(event_name), &handler
+      def on(*event_names, &handler)
+        event_names.each do |event_name|
+          Eventwire.subscribe event_name, handler_id(event_name), &handler
+        end
       end
       
       private
