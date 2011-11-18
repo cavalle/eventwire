@@ -6,6 +6,7 @@ gem 'i18n'
 gem 'delorean'
 gem 'rake'
 gem 'bson_ext'
+gem 'hashie'
 
 unless ENV["CI"]
   gem 'ruby-debug',   :platforms => :mri_18

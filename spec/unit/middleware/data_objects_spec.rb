@@ -22,5 +22,15 @@ describe Eventwire::Middleware::DataObjects do
         data.task_name.should == 'Cleaning'
       end
     end
+    
+    it 'should make the handler build an event object without event data' do
+      app.stub :subscribe do |_, _, handler|
+        handler.call
+      end
+      
+      subject.subscribe :event_name, :handler_id do |data|
+        data.task_name.should be_nil
+      end
+    end
   end
 end

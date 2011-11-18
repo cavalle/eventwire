@@ -1,3 +1,5 @@
+require 'hashie/mash'
+
 module Eventwire
   module Middleware
     class DataObjects < Base
@@ -10,7 +12,7 @@ module Eventwire
       private
 
       def build_event(data)
-        data && Struct.new(*data.keys.map(&:to_sym)).new(*data.values)
+        Hashie::Mash.new(data)
       end
     end
   end
