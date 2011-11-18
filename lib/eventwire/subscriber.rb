@@ -5,8 +5,10 @@ module Eventwire
     end
     
     module DSL
-      def on(event_name, &handler)
-        Eventwire.subscribe event_name, "#{name}::#{increment_handler_counter}", &handler
+      def on(*event_names, &handler)
+        event_names.each do |event_name|
+          Eventwire.subscribe event_name, "#{name}::#{increment_handler_counter}", &handler
+        end
       end
       
       private
