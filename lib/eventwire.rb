@@ -12,6 +12,7 @@ module Eventwire
       @driver = nil
       @middleware = nil
       @logger = nil
+      @namespace = nil
     end
     
     def driver
@@ -29,6 +30,14 @@ module Eventwire
   
     def logger=(logger)
       @logger = logger
+    end
+    
+    def namespace
+      @namespace
+    end
+    
+    def namespace=(namespace)
+      @namespace = namespace
     end
   
     def start_worker
