@@ -13,6 +13,7 @@ module Eventwire
                      [Eventwire::Middleware::Logger, {:logger => logger}],
                      Eventwire::Middleware::JSONSerializer,
                      Eventwire::Middleware::DataObjects]
+      @decorated = false
     end
 
     def driver=(driver)
@@ -24,8 +25,13 @@ module Eventwire
       @error_handler = block
     end
 
+    def decorated?
+      !!@decorated
+    end
+
     def decorate
-      @driver = middleware.inject(@driver) do |driver, args|
+      @decorated = true
+      @driver = middleware.inject(driver) do |driver, args|
         args = Array(args)
         klass = args.shift
         if args && args.any?

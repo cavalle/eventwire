@@ -9,11 +9,8 @@ module Eventwire
   
   class << self
 
-    attr_writer :configuration
-
     def configure
       yield(configuration)
-      configuration.decorate
     end
 
     def configuration
@@ -21,6 +18,7 @@ module Eventwire
     end
 
     def driver
+      configuration.decorate unless configuration.decorated?
       configuration.driver
     end
     
