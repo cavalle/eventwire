@@ -1,69 +1,41 @@
+# encoding: UTF-8
 require 'spec_helper'
 
-describe 'Eventwire configuration' do
-  describe 'driver' do
-    before do
-      Eventwire.middleware.clear
+describe Eventwire::Configuration do
+  describe 'defaults' do
+    subject { Eventwire::Configuration.new }
+
+    it 'driver is InProcess' do
+      subject.driver.should be_an_instance_of(Eventwire::Drivers::InProcess)
     end
-    
-    it 'is InProcess by default' do
-      Eventwire.driver.should be_an_instance_of(Eventwire::Drivers::InProcess)
+
+    it 'logger is a Logger' do
+      subject.logger.should be_an_instance_of(Logger)
     end
-    
-    it 'can be changed to other driver given an instance of it' do
+
+    it 'namespace is nil' do
+      subject.namespace.should be_nil
+    end
+  end
+
+  describe 'override' do
+    subject { Eventwire::Configuration.new }
+
+    it 'driver can be changed to other driver given a class of it' do
       driver = Object.new
-      
-      Eventwire.driver = driver
-      
-      Eventwire.driver.should == driver
+
+      subject.driver = driver
+
+      subject.driver.should == driver
     end
-    
-    it 'can be changed to other driver given its name' do
+
+    it 'driver can be changed to other driver given its name' do
       Eventwire::Drivers::AwesomeDriver = Class.new
-      
-      Eventwire.driver = :AwesomeDriver
-      
-      Eventwire.driver.should be_an_instance_of(Eventwire::Drivers::AwesomeDriver)
+
+      subject.driver = :AwesomeDriver
+
+      subject.driver.should be_an_instance_of(Eventwire::Drivers::AwesomeDriver)
     end
-    
-    context 'driver decoration' do
-      
-      it 'decorates the driver with one middleware' do
-        middleware = Struct.new(:app)
-        driver = Object.new
-        
-        Eventwire.middleware.replace [middleware]
-        Eventwire.driver = driver
-        
-        Eventwire.driver.should be_an_instance_of(middleware)
-        Eventwire.driver.app.should be(driver)
-      end
+  end
 
-      it 'decorates the driver with one middleware and its options' do
-        middleware = Struct.new(:app, :options)
-        driver = Object.new
-        options = {:logger => Logger.new(nil)}
-
-        Eventwire.middleware.replace [[middleware, options]]
-        Eventwire.driver = driver
-
-        Eventwire.driver.should be_an_instance_of(middleware)
-        Eventwire.driver.app.should be(driver)
-        Eventwire.driver.options.should be(options)
-      end
-
-      it 'decorates the driver with more than one middlewares' do
-        middleware1 = Struct.new(:app)
-        middleware2 = Struct.new(:app)
-        driver = Object.new
-        
-        Eventwire.middleware.replace [middleware1, middleware2]
-        Eventwire.driver = driver
-        
-        Eventwire.driver.should be_an_instance_of(middleware2)
-        Eventwire.driver.app.should be_an_instance_of(middleware1)
-        Eventwire.driver.app.app.should be(driver)
-      end
-    end
-  end  
 end

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe 'Project Management System' do
@@ -9,7 +10,9 @@ describe 'Project Management System' do
     context "using the #{driver} driver" do
 
       before do
-        Eventwire.driver = driver
+        Eventwire.configure do |c|
+          c.driver = driver
+        end
 
         load_environment
         start_worker
