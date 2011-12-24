@@ -103,7 +103,7 @@ Since this is 2011, I suppose your app will have a `Gemfile` where you have to a
     
 And then install it…
 
-    $ bundler install
+    $ bundle install
     
 Now you can just include the `Eventwire::Publisher` and `Eventwire::Subscriber` wherever you want to notify or react to events as in the examples at the beginning of this document.
 
