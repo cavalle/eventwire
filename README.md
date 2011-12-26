@@ -83,7 +83,7 @@ See the code examples above.
 
 ### Drivers
 
-Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently four drivers are provided:
+Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently five drivers are provided:
 
 - `Eventwire::Driver::InProcess` (for testing and development mainly)
 - `Eventwire::Driver::AMQP` (default driver. Requires an AMQP server like RabbitMQ)
