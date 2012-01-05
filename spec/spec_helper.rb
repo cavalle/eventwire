@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require File.join(File.dirname(__FILE__), 'support', 'drivers')
 
 Bundler.require
 
@@ -24,8 +25,9 @@ module Helpers
     # Expectations must keep being met for at least 0.5 secs
     5.times { block.call; sleep 0.1 }
   end
-  
 end
+
+include Drivers
 
 def sleep(time)
   factor = ENV['SLEEP_FACTOR'] || 1
