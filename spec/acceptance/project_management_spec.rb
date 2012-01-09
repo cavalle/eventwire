@@ -2,25 +2,11 @@ require 'spec_helper'
 
 describe 'Project Management System' do
 
-  mappings = {
-    'in_process' => 'InProcess',
-    'amqp'       => 'AMQP',
-    'redis'      => 'Redis'
-  }
-  
-  drivers = if ENV['ADAPTERS']
-    [].tap do |drivers|
-      ENV['ADAPTERS'].split(',').each do |driver|
-        drivers << mappings[driver]
-      end
-    end.compact
-  else
-    mappings.values
-  end
+  drivers = %w{InProcess AMQP Redis}
 
   drivers.each do |driver|
 
-    context "using the #{driver} driver" do
+    with_driver driver do
 
       before do
         Eventwire.driver = driver
@@ -65,7 +51,7 @@ describe 'Project Management System' do
     end
 
   end
-  
+
   private
 
   def start_worker
