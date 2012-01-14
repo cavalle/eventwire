@@ -1,5 +1,3 @@
-require 'json'
-
 module Eventwire
   module Adapters
     autoload :InProcess, 'eventwire/adapters/in_process'
