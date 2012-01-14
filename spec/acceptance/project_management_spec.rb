@@ -2,12 +2,12 @@
 require 'spec_helper'
 
 describe 'Project Management System' do
-  
+
   drivers = %w{InProcess AMQP Redis}
 
   drivers.each do |driver|
 
-    context "using the #{driver} driver" do
+    with_driver driver do
 
       before do
         Eventwire.configure do |c|
@@ -54,7 +54,7 @@ describe 'Project Management System' do
     end
 
   end
-  
+
   private
 
   def start_worker

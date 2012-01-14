@@ -83,7 +83,7 @@ See the code examples above.
 
 ### Drivers
 
-Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently four drivers are provided:
+Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently five drivers are provided:
 
 - `Eventwire::Driver::InProcess` (for testing and development mainly)
 - `Eventwire::Driver::AMQP` (default driver. Requires an AMQP server like RabbitMQ)
@@ -103,7 +103,7 @@ Since this is 2011, I suppose your app will have a `Gemfile` where you have to a
     
 And then install it…
 
-    $ bundler install
+    $ bundle install
     
 Now you can just include the `Eventwire::Publisher` and `Eventwire::Subscriber` wherever you want to notify or react to events as in the examples at the beginning of this document.
 
