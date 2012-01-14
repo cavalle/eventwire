@@ -1,44 +1,35 @@
 module Eventwire
   class Configuration
 
-    attr_reader :driver, :error_handler
-
-    attr_accessor :middleware, :namespace, :logger
+    attr_reader   :middleware, :error_handler
+    attr_accessor :namespace, :logger
 
     def initialize
-      @driver = Drivers::InProcess.new
-      @logger = Logger.new(nil)
-      @error_handler = lambda{|ex| }
-      @middleware = [[Eventwire::Middleware::ErrorHandler, {:error_handler => error_handler, :logger => logger}],
-                     [Eventwire::Middleware::Logger, {:logger => logger}],
-                     Eventwire::Middleware::JSONSerializer,
-                     Eventwire::Middleware::DataObjects]
-      @decorated = false
+      @adapter = Adapters::AMQP.new
+      @logger = Logger.new($stdout)
+      @error_handler = lambda {|ex| }
+      @middleware = [
+        [ Eventwire::Middleware::ErrorHandler, self ],
+        [ Eventwire::Middleware::Logger,       self ],
+          Eventwire::Middleware::JSONSerializer,
+          Eventwire::Middleware::DataObjects
+      ]
     end
 
-    def driver=(driver)
-      klass = Drivers.const_get(driver.to_sym) if driver.respond_to?(:to_sym)
-      @driver = klass ? klass.new : driver
+    def adapter=(adapter)
+      klass = Adapters.const_get(adapter.to_sym) if adapter.respond_to?(:to_sym)
+      @adapter = klass ? klass.new : adapter
     end
 
     def on_error(&block)
       @error_handler = block
     end
 
-    def decorated?
-      !!@decorated
-    end
-
-    def decorate
-      @decorated = true
-      @driver = middleware.inject(driver) do |driver, args|
-        args = Array(args)
+    def driver
+      @middleware.inject(@adapter) do |driver, args|
+        args  = Array(args).clone
         klass = args.shift
-        if args && args.any?
-          klass.new(driver, *args)
-        else
-          klass.new(driver)
-        end
+        klass.new(driver, *args)
       end
     end
 

@@ -1,4 +1,4 @@
-class Eventwire::Drivers::InProcess
+class Eventwire::Adapters::InProcess
   def initialize
     @handlers = {}
   end

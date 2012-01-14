@@ -1,7 +1,7 @@
 require 'redis'
 require 'em-redis'
 
-class Eventwire::Drivers::Redis
+class Eventwire::Adapters::Redis
   def initialize
     @handlers = []
   end

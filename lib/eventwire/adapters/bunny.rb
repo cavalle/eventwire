@@ -1,6 +1,6 @@
 require 'bunny'
 
-class Eventwire::Drivers::Bunny
+class Eventwire::Adapters::Bunny
   
   def publish(event_name, event_data = nil)
     Bunny.run do |mq|

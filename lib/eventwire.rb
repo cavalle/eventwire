@@ -2,7 +2,7 @@ require 'eventwire/version'
 require 'eventwire/configuration'
 require 'eventwire/publisher'
 require 'eventwire/subscriber'
-require 'eventwire/drivers'
+require 'eventwire/adapters'
 require 'eventwire/middleware'
 
 module Eventwire
@@ -18,7 +18,6 @@ module Eventwire
     end
 
     def driver
-      configuration.decorate unless configuration.decorated?
       configuration.driver
     end
     
@@ -28,14 +27,6 @@ module Eventwire
 
     def namespace
       configuration.namespace
-    end
-
-    def middleware
-      configuration.middleware
-    end
-
-    def error_handler
-      configuration.on_error
     end
   
     def start_worker

@@ -7,9 +7,8 @@ describe Eventwire::Subscriber do
     
     before do
       @driver = mock
-      Eventwire.configure do |c|
-        c.driver = @driver
-      end
+      Eventwire.configuration.stub(:driver => @driver)
+      Eventwire.configuration.logger = Logger.new(nil)
     end
     
     subject { class_including Eventwire::Subscriber }

@@ -1,6 +1,5 @@
 # Eventwire: Event Collaboration for the Masses[ ![Build Status](https://secure.travis-ci.org/cavalle/eventwire.png?branch=master)](http://travis-ci.org/cavalle/eventwire)
 
-
 Eventwire is a generic and simple interface to various backends (AMQP, Redis, ZeroMQ, MongoDB) to help building event-driven systems
 
 _**WARNING:** This gem is in a very early stage of development. No first version has been released yet. That means that some of things described in this file might not be implemented, and those which are, might not be production ready._
@@ -81,15 +80,14 @@ It provides two modules, `Eventwire::Publisher` and `Eventwire::Subscriber`, whi
 
 See the code examples above.
 
-### Drivers
+### Adapters
 
-Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently five drivers are provided:
+Committing to that simple generic interface, Eventwire includes various drivers for different backends. Developers can choose which one to use depending on what is available in their current infrastructure or what are their needs in terms of reliability, performance or scalability. Currently four drivers are provided:
 
-- `Eventwire::Driver::InProcess` (for testing and development mainly)
-- `Eventwire::Driver::AMQP` (default driver. Requires an AMQP server like RabbitMQ)
-- `Eventwire::Driver::Redis` (experimental. Requires a Redis server)
-- `Eventwire::Driver::Zero` (experimental. Uses ØMQ)
-- `Eventwire::Driver::Mongo` (experimental. Requires a MongoDB server)
+- `Eventwire::Adapter::InProcess` (for testing and development mainly)
+- `Eventwire::Adapter::AMQP` (default driver. Requires an AMQP server like RabbitMQ)
+- `Eventwire::Adapter::Redis` (experimental. Requires a Redis server)
+- `Eventwire::Adapter::Mongo` (experimental. Requires a MongoDB server)
 
 ### Workers
 

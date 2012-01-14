@@ -3,15 +3,16 @@ require 'spec_helper'
 
 describe 'Project Management System' do
 
-  drivers = %w{InProcess AMQP Redis}
+  adapters = %w{InProcess AMQP Redis}
 
-  drivers.each do |driver|
+  adapters.each do |adapter|
 
-    with_driver driver do
+    with_adapter adapter do
 
       before do
         Eventwire.configure do |c|
-          c.driver = driver
+          c.adapter = adapter
+          c.logger = Logger.new(nil)
         end
 
         load_environment
