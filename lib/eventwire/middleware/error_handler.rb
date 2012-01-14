@@ -1,11 +1,9 @@
 module Eventwire
   module Middleware
     class ErrorHandler < Base
-
-      def initialize(app, options = {})
+      def initialize(app, config = nil)
         super(app)
-        @error_handler = options.delete(:error_handler) || lambda{|ex|}
-        @logger = options.delete(:logger) || ::Logger.new(nil)
+        @config = config
       end
 
       def subscribe(event_name, handler_id, &handler)
@@ -13,12 +11,21 @@ module Eventwire
           begin
             handler.call(data)
           rescue Exception => ex
-            @logger.error "\nAn error occurred: `#{ex.message}`\n#{ex.backtrace.join("\n")}\n"
-            @error_handler.call(ex)
+            logger.error "\nAn error occurred: `#{ex.message}`\n#{ex.backtrace.join("\n")}\n"
+            error_handler.call(ex)
           end
         end
       end
-      
+
+      private
+
+      def error_handler
+        @config.error_handler
+      end
+
+      def logger
+        @config.logger
+      end
     end
   end
 end

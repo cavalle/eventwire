@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe Eventwire::Subscriber do
@@ -6,7 +7,8 @@ describe Eventwire::Subscriber do
     
     before do
       @driver = mock
-      Eventwire.driver = @driver
+      Eventwire.configuration.stub(:driver => @driver)
+      Eventwire.configuration.logger = Logger.new(nil)
     end
     
     subject { class_including Eventwire::Subscriber }
@@ -53,19 +55,19 @@ describe Eventwire::Subscriber do
     end
     
     it 'should prepend a namespace to to handler id' do
-      Eventwire.namespace = 'MyApplication'
+      Eventwire.configuration.namespace = 'MyApplication'
       
       @driver.should_receive(:subscribe).with do |event_name, handler_id|
         handler_id =~ /MyApplication/
       end
-      
+
       subject.on(:task_completed) { }
     end
     
     it 'should warn if no namespace has been specified' do
       io = StringIO.new
-      Eventwire.logger = Logger.new(io)
-      
+      Eventwire.configuration.logger = Logger.new(io)
+
       @driver.stub(:subscribe)
       
       subject.on(:task_completed) { }
@@ -74,10 +76,9 @@ describe Eventwire::Subscriber do
     end
     
     it 'should not warn if namespace has been specified' do
-      Eventwire.namespace = 'MyApplication'
-      
       io = StringIO.new
-      Eventwire.logger = Logger.new(io)
+      Eventwire.configuration.logger = Logger.new(io)
+      Eventwire.configuration.namespace = 'MyApplication'
       
       @driver.stub(:subscribe)
       

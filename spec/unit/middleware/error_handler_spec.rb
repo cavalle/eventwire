@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Eventwire::Middleware::ErrorHandler do
   
   let(:app) { mock }
-  subject { Eventwire::Middleware::ErrorHandler.new(app) }
+  subject { Eventwire::Middleware::ErrorHandler.new(app, stub(:error_handler => proc {}, :logger => Logger.new(nil))) }
   
   describe 'subscribe' do
     it 'should call app’s subscribe' do
@@ -24,7 +24,7 @@ describe Eventwire::Middleware::ErrorHandler do
     end
 
     context 'when error_handler is present' do
-      subject { Eventwire::Middleware::ErrorHandler.new(app, :error_handler => lambda { |e| @error = e }) }
+      subject { Eventwire::Middleware::ErrorHandler.new(app, stub(:error_handler => lambda { |e| @error = e }, :logger => Logger.new(nil))) }
       
       it 'should make the handler run the block' do
         @error = nil
@@ -43,7 +43,7 @@ describe Eventwire::Middleware::ErrorHandler do
     
     context 'when logger is present' do
       let(:io) { StringIO.new }
-      subject { Eventwire::Middleware::ErrorHandler.new(app, :logger => Logger.new(io)) }
+      subject { Eventwire::Middleware::ErrorHandler.new(app, stub(:logger => Logger.new(io), :error_handler => proc {})) }
           
       it 'should make the handler log when an exception happens' do
         app.stub :subscribe do |_, _, handler| 

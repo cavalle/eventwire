@@ -1,6 +1,6 @@
 require 'mongo'
 
-class Eventwire::Drivers::Mongo
+class Eventwire::Adapters::Mongo
   DB_NAME = 'broker'
   
   def initialize

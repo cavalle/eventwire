@@ -19,4 +19,14 @@ module Helpers
     # Expectations must keep being met for at least 0.5 secs
     5.times { block.call; sleep 0.1 }
   end
+
+  def with_stdout(io)
+    original = $stdout
+    begin
+      $stdout = io
+      yield(io)
+    ensure
+      $stdout = original
+    end
+  end
 end

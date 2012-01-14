@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe Eventwire::Publisher do
@@ -6,21 +7,20 @@ describe Eventwire::Publisher do
     
     before do
       @driver = mock
-      Eventwire.middleware.clear
-      Eventwire.driver = @driver
+      Eventwire.configuration.stub(:driver => @driver)
     end
     
     subject { class_including(Eventwire::Publisher).new }
     
-    it 'should publish the event using the current driver' do
-      Eventwire.driver.should_receive(:publish).with(:task_created, anything)
+    it 'should publish the event using the current adapter' do
+      @driver.should_receive(:publish).with(:task_created, anything)
       
       subject.publish_event :task_created
     end
     
-    it 'should publish the event with its data using the current driver' do
-      Eventwire.driver.should_receive(:publish).with(:task_created, :task_name => 'Cleaning')
-      
+    it 'should publish the event with its data using the current adapter' do
+      @driver.should_receive(:publish).with(:task_created, {:task_name => 'Cleaning'})
+
       subject.publish_event :task_created, :task_name => 'Cleaning'
     end
     

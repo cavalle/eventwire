@@ -1,7 +1,7 @@
 require 'bunny'
 require 'amqp'
 
-class Eventwire::Drivers::AMQP
+class Eventwire::Adapters::AMQP
   def publish(event_name, event_data = nil)
     Bunny.run do |mq|
       mq.exchange(event_name.to_s, :type => :fanout).publish(event_data)

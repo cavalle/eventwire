@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'timeout'
 
-shared_examples_for 'a driver with single-process support' do
+shared_examples_for 'an adapter with single-process support' do
   
   def start_worker
     @t = Thread.new { subject.start }
@@ -69,7 +69,7 @@ shared_examples_for 'a driver with single-process support' do
   
 end
 
-shared_examples_for 'a driver with multi-process support' do
+shared_examples_for 'an adapter with multi-process support' do
 
   before do
     initialize_proccesses   

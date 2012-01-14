@@ -5,7 +5,7 @@ describe Eventwire::Middleware::Logger do
   let(:app) { mock }
   let(:io) { StringIO.new }
   
-  subject { Eventwire::Middleware::Logger.new(app, :logger => Logger.new(io)) }
+  subject { Eventwire::Middleware::Logger.new(app, stub(:logger => Logger.new(io))) }
   
   describe 'subscribe' do
     it 'should call app’s subscribe' do

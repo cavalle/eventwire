@@ -5,7 +5,7 @@ Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))
 
 Bundler.require
 
-include Drivers
+include Adapters
 
 def sleep(time)
   factor = ENV['SLEEP_FACTOR'] || 1
