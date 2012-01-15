@@ -18,6 +18,12 @@ describe Eventwire::Publisher do
       subject.publish_event :task_created
     end
     
+    it 'should publish the event using a symbol as event name' do
+      @driver.should_receive(:publish).with(:task_created, anything)
+      
+      subject.publish_event 'task_created'
+    end
+    
     it 'should publish the event with its data using the current adapter' do
       @driver.should_receive(:publish).with(:task_created, {:task_name => 'Cleaning'})
 

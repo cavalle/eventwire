@@ -18,6 +18,12 @@ describe Eventwire::Subscriber do
       
       subject.on(:task_completed) { } 
     end
+
+    it 'should always subscribe using a symbol as the event name' do
+      Eventwire.driver.should_receive(:subscribe).with(:task_completed, anything)
+      
+      subject.on('task_completed') { } 
+    end
     
     it 'should include the event name in the handler id' do
       @driver.should_receive(:subscribe).with do |event_name, handler_id|
