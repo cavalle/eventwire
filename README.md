@@ -95,9 +95,9 @@ Finally, Eventwire includes a convenient Rake task for starting workers that wil
 
 ## Getting started
 
-Since this is 2011, I suppose your app will have a `Gemfile` where you have to add the gem.
+Since this is 2012, I suppose your app will have a `Gemfile` where you have to add the gem.
 
-    gem 'eventwire'
+    gem 'eventwire', :git => "git://github.com/cavalle/eventwire.git"
     
 And then install it…
 
