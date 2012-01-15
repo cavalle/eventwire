@@ -2,8 +2,12 @@ require 'bunny'
 
 class Eventwire::Adapters::Bunny
   
+  def initialize(options = {})
+    @options = options
+  end
+
   def publish(event_name, event_data = nil)
-    Bunny.run do |mq|
+    connect do |mq|
       mq.exchange(event_name.to_s, :type => :fanout).publish(event_data)
     end
   end
@@ -14,8 +18,8 @@ class Eventwire::Adapters::Bunny
   end
 
   def start
-    Bunny.run do |channel|
-      queue  = channel.queue(queue_name)
+    connect do |channel|
+      queue = channel.queue(queue_name)
       
       subscriptions.each do |event_name, handlers| 
         fanout = channel.exchange(event_name.to_s, :type => :fanout)
@@ -37,7 +41,7 @@ class Eventwire::Adapters::Bunny
   end
   
   def purge
-    Bunny.run do |channel|
+    connect do |channel|
       subscriptions.each do |event_name, _|
         channel.exchange(event_name, :type => :fanout).delete
       end
@@ -55,6 +59,10 @@ class Eventwire::Adapters::Bunny
   
   def queue_name
     Digest::MD5.hexdigest(handler_ids.join(':'))
+  end
+
+  def connect(&block)
+    Bunny.run(@options, &block)
   end
   
 end

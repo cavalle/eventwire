@@ -2,8 +2,12 @@ require 'bunny'
 require 'amqp'
 
 class Eventwire::Adapters::AMQP
+  def initialize(options = {})
+    @options = options
+  end
+
   def publish(event_name, event_data = nil)
-    Bunny.run do |mq|
+    connect_synch do |mq|
       mq.exchange(event_name.to_s, :type => :fanout).publish(event_data)
     end    
   end
@@ -13,7 +17,7 @@ class Eventwire::Adapters::AMQP
   end
 
   def start
-    AMQP.start do
+    connect_asynch do
       subscriptions.each {|subscription| bind_subscription(*subscription) }
     end
   end
@@ -23,7 +27,7 @@ class Eventwire::Adapters::AMQP
   end
   
   def purge
-    Bunny.run do |mq|
+    connect_synch do |mq|
       subscriptions.group_by(&:first).each do |event_name, _|
         mq.exchange(event_name, :type => :fanout).delete
       end
@@ -46,6 +50,14 @@ class Eventwire::Adapters::AMQP
         handler.call json_data
       end
     end
+  end
+
+  def connect_asynch(&block)
+    AMQP.start(@options, &block)
+  end
+
+  def connect_synch(&block)
+    Bunny.run(@options, &block)
   end
   
 end
