@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe 'Project Management System' do
 
-  adapters = %w{InProcess AMQP Redis}
+  adapters = %w{InProcess AMQP Redis Mongo}
 
   adapters.each do |adapter|
 

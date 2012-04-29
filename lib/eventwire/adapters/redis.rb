@@ -2,12 +2,13 @@ require 'redis'
 require 'em-redis'
 
 class Eventwire::Adapters::Redis
-  def initialize
+  def initialize(options = {})
+    @options  = options
     @handlers = []
   end
   
   def publish(event_name, event_data = nil)
-    redis = ::Redis.new
+    redis = ::Redis.new(@options)
     handlers = redis.smembers("event_handlers:#{event_name}")
     handlers.each do |handler|
       redis.rpush handler, event_data
@@ -16,7 +17,7 @@ class Eventwire::Adapters::Redis
 
   def subscribe(event_name, handler_id, &handler)
     @handlers << [handler_id, handler]
-    ::Redis.new.sadd "event_handlers:#{event_name}", handler_id
+    ::Redis.new(@options).sadd "event_handlers:#{event_name}", handler_id
   end
 
   def start
@@ -30,7 +31,7 @@ class Eventwire::Adapters::Redis
   end
 
   def subscribe_to_queue(queue, redis = nil, &block)
-    redis ||= EM::Protocols::Redis.connect
+    redis ||= EM::Protocols::Redis.connect(@options)
     redis.blpop(queue, 0) do |response|
       block.call(response.last) if response
       subscribe_to_queue(queue, redis, &block)
@@ -42,7 +43,7 @@ class Eventwire::Adapters::Redis
   end
   
   def purge
-    redis = ::Redis.new
+    redis = ::Redis.new(@options)
     redis.flushdb
   end
   
