@@ -13,7 +13,7 @@ describe Eventwire::Middleware::BSONSerializer do
     end
     
     it 'should make the handler deserialize event data' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call(BSON.serialize({'task_name' => 'Cleaning'}))
       end
       
