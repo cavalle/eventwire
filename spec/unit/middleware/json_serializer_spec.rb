@@ -13,7 +13,7 @@ describe Eventwire::Middleware::JSONSerializer do
     end
     
     it 'should make the handler deserialize event data' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call('{"task_name": "Cleaning"}')
       end
       
@@ -23,7 +23,7 @@ describe Eventwire::Middleware::JSONSerializer do
     end
     
     it 'should make the handler deserialize null event data' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call('null')
       end
       

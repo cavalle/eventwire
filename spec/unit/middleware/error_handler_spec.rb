@@ -14,7 +14,7 @@ describe Eventwire::Middleware::ErrorHandler do
     end
     
     it 'should make the handler fault tolerant' do
-      app.stub :subscribe do |_, _, handler| 
+      app.stub :subscribe do |_, _, &handler|
         handler.call
       end
     
@@ -29,7 +29,7 @@ describe Eventwire::Middleware::ErrorHandler do
       it 'should make the handler run the block' do
         @error = nil
         
-        app.stub :subscribe do |_, _, handler|
+        app.stub :subscribe do |_, _, &handler|
           handler.call
         end
 
@@ -46,7 +46,7 @@ describe Eventwire::Middleware::ErrorHandler do
       subject { Eventwire::Middleware::ErrorHandler.new(app, stub(:logger => Logger.new(io), :error_handler => proc {})) }
           
       it 'should make the handler log when an exception happens' do
-        app.stub :subscribe do |_, _, handler| 
+        app.stub :subscribe do |_, _, &handler|
           handler.call
         end
     

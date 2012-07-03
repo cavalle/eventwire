@@ -13,7 +13,7 @@ describe Eventwire::Middleware::MessagePackSerializer do
     end
     
     it 'should make the handler deserialize event data' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call({'task_name' => 'Cleaning'}.to_msgpack)
       end
       

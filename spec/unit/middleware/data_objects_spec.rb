@@ -13,7 +13,7 @@ describe Eventwire::Middleware::DataObjects do
     end
     
     it 'should make the handler build an event object' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call(:task_name => 'Cleaning')
         handler.call('task_name' => 'Cleaning')
       end
@@ -24,7 +24,7 @@ describe Eventwire::Middleware::DataObjects do
     end
     
     it 'should make the handler build an event object without event data' do
-      app.stub :subscribe do |_, _, handler|
+      app.stub :subscribe do |_, _, &handler|
         handler.call
       end
       

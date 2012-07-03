@@ -15,7 +15,7 @@ describe Eventwire::Middleware::Logger do
     end
     
     it 'should decorate the handler with logging' do
-      app.stub(:subscribe) do |_, _, handler|
+      app.stub(:subscribe) do |_, _, &handler|
         handler.call(:data => 'hey')
       end
       
@@ -31,7 +31,7 @@ OUTPUT
     end
     
     it 'should decorate the handler with logging when exceptions happens' do
-      app.stub(:subscribe) do |_, _, handler|
+      app.stub(:subscribe) do |_, _, &handler|
         handler.call rescue nil
       end
       

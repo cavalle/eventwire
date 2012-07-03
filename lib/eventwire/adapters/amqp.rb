@@ -42,7 +42,7 @@ class Eventwire::Adapters::AMQP
   end
   
   def bind_subscription(event_name, handler_id, handler)   
-    AMQP::Channel.new do |ch|
+    (@channel ||= AMQP::Channel.new).tap do |ch|
       fanout = ch.fanout(event_name.to_s)
       queue  = ch.queue(handler_id.to_s)
 
