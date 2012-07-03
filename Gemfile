@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem 'rspec', '2.8'
+gem 'rspec'
 gem 'activesupport', :require => 'active_support/all'
 gem 'i18n'
 gem 'delorean'
