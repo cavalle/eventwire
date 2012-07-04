@@ -17,6 +17,10 @@ class Eventwire::Adapters::Bunny
     handler_ids << handler_id
   end
 
+  def subscribe?(event_name, handler_id)
+    handler_ids.include?(handler_id)
+  end
+
   def start
     connect do |channel|
       queue = channel.queue(queue_name)

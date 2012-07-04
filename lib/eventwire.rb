@@ -45,10 +45,15 @@ module Eventwire
       driver.subscribe event_name, handler_id, &handler
     end
 
+    def subscribe?(event_name, handler_id)
+      driver.subscribe?(event_name, handler_id)
+    end
+
     def reset!
       @configuration = nil
     end
 
   end
   
+  class Error < StandardError; end
 end

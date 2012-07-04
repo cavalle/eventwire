@@ -66,6 +66,14 @@ shared_examples_for 'an adapter with single-process support' do
       event_data.should == 'event_data'
     }
   end
+
+  it 'should return true if the handler_id is already subscribed' do
+    subject.subscribe?(:this_event, :this_subscriber).should be_false
+
+    subject.subscribe(:this_event, :this_subscriber) {}
+
+    subject.subscribe?(:this_event, :this_subscriber).should be_true
+  end
   
 end
 

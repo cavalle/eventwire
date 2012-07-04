@@ -19,6 +19,10 @@ class Eventwire::Adapters::Redis
     ::Redis.new.sadd "event_handlers:#{event_name}", handler_id
   end
 
+  def subscribe?(event_name, handler_id)
+    @handlers.any? { |h| h.first == handler_id }
+  end
+
   def start
     EM.run do
       @handlers.each do |queue, handler|

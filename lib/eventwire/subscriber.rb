@@ -8,7 +8,11 @@ module Eventwire
     module DSL
       def on(*event_names, &handler)
         event_names.each do |event_name|
-          Eventwire.subscribe event_name.to_sym, handler_id(event_name), &handler
+          unless Eventwire.subscribe?(event_name.to_sym, handler_id(event_name))
+            Eventwire.subscribe event_name.to_sym, handler_id(event_name), &handler
+          else
+            raise Eventwire::Error, 'Multiple handlers for same event in same class'
+          end
         end
       end
       
@@ -17,7 +21,7 @@ module Eventwire
       def handler_id(event_name)
         check_namespace!
         
-        [namespace, event_name, self.name, increment_handler_counter].compact.join('::')
+        [namespace, event_name, self.name].compact.join('::')
       end
       
       def check_namespace!
@@ -30,10 +34,6 @@ module Eventwire
         Eventwire.namespace
       end
       
-      def increment_handler_counter
-        @_handler_counter ||= 0
-        @_handler_counter +=  1
-      end
     end
   end
 end

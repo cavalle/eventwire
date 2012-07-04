@@ -16,6 +16,10 @@ class Eventwire::Adapters::AMQP
     subscriptions << [event_name, handler_id, handler]
   end
 
+  def subscribe?(event_name, handler_id)
+    subscriptions.any? {|s| s[0] == event_name && s[1] == handler_id }
+  end
+
   def start
     connect_asynch do
       subscriptions.each {|subscription| bind_subscription(*subscription) }
