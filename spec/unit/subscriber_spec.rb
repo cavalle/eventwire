@@ -53,9 +53,24 @@ describe Eventwire::Subscriber do
     it 'should raise a exception if try to associate more than one handler per class' do
       @driver.should_receive(:subscribe?).and_return(false,true)
       @driver.should_receive(:subscribe).with(any_args)
-      subject.on(:task_completed) { } 
 
-      expect {subject.on(:task_completed) { } }.to raise_error(Eventwire::Error, 'Multiple handlers for same event in same class')
+      subject.on(:task_completed) { }
+
+      expect {
+        subject.on(:task_completed) { }
+      }.to raise_error(Eventwire::Error, 'Multiple handlers for same event in same class')
+    end
+
+    it 'shouldn‘t raise a exception in test mode' do
+      Eventwire.configuration.test_mode = true
+
+      @driver.should_receive(:subscribe).with(any_args).twice
+
+      subject.on(:task_completed) { }
+
+      expect {
+        subject.on(:task_completed) { }
+      }.to_not raise_error(Eventwire::Error, 'Multiple handlers for same event in same class')
     end
 
     it 'should prepend a namespace to to handler id' do

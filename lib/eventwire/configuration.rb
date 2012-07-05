@@ -2,7 +2,7 @@ module Eventwire
   class Configuration
 
     attr_reader   :middleware, :error_handler
-    attr_accessor :namespace, :logger
+    attr_accessor :namespace, :logger, :test_mode
 
     def initialize
       @adapter = Adapters::AMQP.new
@@ -14,6 +14,7 @@ module Eventwire
           Eventwire::Middleware::JSONSerializer,
           Eventwire::Middleware::DataObjects
       ]
+      @test_mode = false
     end
 
     def adapter=(adapter)

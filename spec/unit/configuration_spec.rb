@@ -123,4 +123,10 @@ describe Eventwire::Configuration do
       subject.error_handler.should == handler
     end
   end
+
+  describe 'test_mode' do
+    it 'returns false by default' do
+      subject.test_mode.should be_false
+    end
+  end
 end
