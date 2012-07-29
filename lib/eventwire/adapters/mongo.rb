@@ -1,9 +1,12 @@
 require 'mongo'
 
 class Eventwire::Adapters::Mongo
-  DB_NAME = 'broker'
+  DEFAULT_OPTIONS = {:host => 'localhost', :port => 27017, 
+                     :safe => true, :db_name => 'broker',
+                     :pool_timeout => 5, :pool_size => 5 }
   
-  def initialize
+  def initialize(options = {})
+    @options = DEFAULT_OPTIONS.merge(options)
     @handlers = []
   end
 
@@ -33,12 +36,12 @@ class Eventwire::Adapters::Mongo
     
     loop do
       @handlers.each do |queue_name, handler|
-        break unless @started
         queue = db.collection(queue_name)
         if event_data = queue.find_and_modify({:remove => true})
           handler.call event_data['event_data']
         end
       end
+      break unless @started
     end
   end
 
@@ -47,11 +50,29 @@ class Eventwire::Adapters::Mongo
   end
 
   def db
-    @db ||= Mongo::Connection.new('localhost', 27017, :safe => true).db(DB_NAME)
+    @db ||= Mongo::Connection.new(host, port, options).db(db_name)
   end
 
   def purge
-    Mongo::Connection.new.drop_database(DB_NAME)
+    Mongo::Connection.new(host, port, options).drop_database(db_name)
+  end
+
+  private
+
+  def host
+    @options[:host]
+  end
+
+  def port
+    @options[:port]
+  end
+
+  def options
+    { :safe => @options[:safe], :pool_timeout => @options[:pool_timeout], :pool_size => @options[:pool_size] }
+  end
+  
+  def db_name
+   @options[:db_name]
   end
   
 end
