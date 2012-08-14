@@ -8,12 +8,14 @@ class Eventwire::Adapters::SafeAMQP
   end
 
   def publish(event_name, event_data = nil)
+    keep_reactor_loop = EM.reactor_running?
+
     connect_asynch do |conn|
       AMQP::Channel.new(conn) do |channel|
         channel.confirm_select
         channel.on_ack  do |basic_ack|
           channel.close
-          stop
+          stop unless keep_reactor_loop
         end
         fanout = channel.fanout(event_name.to_s, :durable => true)
         fanout.publish(event_data, :persistent => true)
