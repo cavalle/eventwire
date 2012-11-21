@@ -135,9 +135,9 @@ For instance, in Rails you could add a file in `config/initializers` called `eve
 
     $ rake environment eventwire:work
 
-## Credits
+## License
 
-Copyright © 2011 Luismi Cavallé, released under the MIT license
+Released under the MIT license
 
 [1]: http://martinfowler.com/eaaDev/EventCollaboration.html
 [2]: http://www.rabbitmq.com/install.html
