@@ -1,0 +1,27 @@
+source "http://rubygems.org"
+
+gem 'rspec'
+gem 'activesupport', '~> 3.2', :require => 'active_support/all'
+gem 'i18n'
+gem 'delorean'
+gem 'rake'
+gem 'bson_ext'
+gem 'hashie'
+
+# Working gem versions
+gem 'eventmachine', '1.0.3'
+gem 'amq-protocol', '0.9.5'
+gem 'amq-client', '0.9.4' # Next versions generate errors
+
+# Drivers
+gem 'amqp', '0.9.7',  :require => false
+gem 'bunny', '0.8.0', :require => false
+gem 'redis',          :require => false
+gem 'em-redis',       :require => false
+gem 'mongo',          :require => false
+
+# Middleware
+gem 'json',    :require => false
+gem 'msgpack', :require => false
+
+gem 'SystemTimer', :require => false, :platforms => :mri_18

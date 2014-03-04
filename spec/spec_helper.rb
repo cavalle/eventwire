@@ -1,10 +1,11 @@
 require 'rubygems'
 require 'bundler'
 
-Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))].each { |f| require f }
-
 Bundler.require
 
+require 'eventwire'
+
+Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))].each { |f| require f }
 include Adapters
 
 def sleep(time)
