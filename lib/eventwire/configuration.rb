@@ -27,7 +27,7 @@ module Eventwire
     end
 
     def driver
-      @middleware.inject(@adapter) do |driver, args|
+      @driver ||= @middleware.inject(@adapter) do |driver, args|
         args  = Array(args).clone
         klass = args.shift
         klass.new(driver, *args)
